@@ -288,6 +288,7 @@ to mess with collection views.
 			this.render(); 
 		}
 	,   render: function(){
+			$(this.el).html(""); //clear
 			var display_skeleton_html = window.JST['display_skeleton'];
 			$('#econ-cit-container').html(display_skeleton_html);
 			var create_entry_html = window.JST['create_entry'];
@@ -334,7 +335,7 @@ to mess with collection views.
 	,	initialize : function(){
 			console.log("init user view");
 			//the following lines allow us to render category views after the user view is rendered. 
-			_.bindAll(this, 'render'); //keeps 'this' this in afterRender
+			_.bindAll(this, 'render', 'seeAllEntries'); //keeps 'this' this in afterRender
 			this.render(); 
 		}
 	,	render: function(){
@@ -342,8 +343,13 @@ to mess with collection views.
 			var skeleton_template = window.JST['user_skeleton'];
 			$(this.el).html(skeleton_template({"username" : username}));
 			$('#logout-button').click(this.logout);
+			$("#see-all-entries-button").click(this.seeAllEntries); //clear
 			var entries_display = new UserEntriesDisplayView({model: this.model}); //pass user as model to entriesDisplayView
 		}
+	,	seeAllEntries : function(uid){
+			console.log("display all entries for user: " + this.model.get("_id"));
+			app.home(this.model.get("_id"));
+		}	
 	,   logout : function(e){
         	var url = CONFIG.base_url + "logout";
 			$.ajax({
@@ -375,12 +381,14 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 			this.render(); 
 		}
 	,	render: function(){
+			$(this.el).html(""); //clear
 			var entry_name = this.model.get("name");
 			var start_date = (new Date(this.model.get("start_date"))).toDateString();
 			var end_date = (new Date(this.model.get("end_date"))).toDateString();
 			var entry_data = {"entry_name": entry_name, "start_date": start_date, "end_date": end_date}
 			var econ_cit_input_skeleton_html = window.JST['econ_cit_input_skeleton'];
 			$("#econ-cit-container").html(econ_cit_input_skeleton_html(entry_data)); //replace display view
+			
 			$('#total-score-button').click(this.calculateTotalScore);
 			$('#clear-score-button').click(this.clearScoreInfo);
 		}

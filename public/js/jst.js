@@ -37,6 +37,7 @@ window.JST['user_skeleton'] = _.template(
        '<div class="well well-sm">\
             <div class="text-center">\
                 You are logged in as <%=username%> --- \
+                <button id="see-all-entries-button" class="btn btn btn-xm">Home</button>\
                 <button id="logout-button" class="btn btn-xm">Logout</button>\
             </div>\
         </div>\
@@ -79,7 +80,11 @@ window.JST['entry_display'] = _.template(
 input forms. It must be in the dom before the tabs and inputs 
 are added.*/
 window.JST['econ_cit_input_skeleton'] = _.template(
-    '<div>You are editing <%= entry_name%>: From <%=start_date%> to <%=end_date%>. </div>\
+    '<div>\
+        <small>\
+        <p>You are editing <%= entry_name%>: from <%=start_date%> to <%=end_date%>.</p>\
+         </small>\
+     </div>\
     <div role="tabpanel">\
         <ul class="nav nav-tabs" role="tablist"></ul>\
     </div>\
