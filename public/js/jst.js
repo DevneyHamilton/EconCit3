@@ -18,14 +18,32 @@ window.JST['login'] = _.template(
 
 window.JST['register'] = _.template(
 	'<div>\
-        <h1>Registration Details:</h1>\
-        <div id="account-wall">\
+        <h4>Register for the Economic Citizenship App!</h4>\
+        <div id="register-container">\
             <form id="register-form" action="/register" method="POST" role="form">\
-            <input id="register-username" type="text" name="username" class="form-control" placeholder="Username">\
-            <input id="register-password" type = "text" name="password" class="form-control" placeholder="Password">\
-            <input id="register-email" type = "text" name="email" class="form-control" placeholder="Email">\
-            <input id="register-county" type = "text" name="county" class="form-control" placeholder="County">\
-            <button id="register-submit-button" class="btn btn-default" type="submit">Register</button>\
+                <div class="form-group">\
+                    <label for="register-username">Username</label>\
+                    <div class="sub-label"> We suggest your first name followed by the first two letters of your family name.</div>\
+                    <input id="register-username" type="text" name="username" class="form-control" placeholder="FirstLa">\
+                </div>\
+                <div class="form-group">\
+                    <label for="register-password"> Password</label>\
+                    <div class="sub-label">Remember this. This early version of the app does not have password recovery.</div>\
+                    <input id="register-password" type = "text" name="password" class="form-control" placeholder="Password">\
+                </div>\
+                <div class="form-group">\
+                    <label for="register-confirm-password">Confirm Password</label>\
+                    <input id="register-confirm-password" type = "text" name="confirmPassword" class="form-control" placeholder="Confirm Password">\
+                </div>\
+                <div class="form-group">\
+                    <label for="register-email">Email</label>\
+                    <input id="register-email" type="text" name="registerEmail" class="form-control" placeholder="Email">\
+                </div>\
+                <div class="form-group">\
+                    <label for="register-county">County</label>\
+                    <input id="register-county" type = "text" name="county" class="form-control" placeholder="County">\
+                </div>\
+                <button id="register-submit-button" class="btn btn-default" type="submit">Register</button>\
             </form>\
         </div>\
         <button id="login-button" class="btn btn-default" type="submit">Back to Login</button>\
@@ -34,11 +52,13 @@ window.JST['register'] = _.template(
 );
 
 window.JST['user_skeleton'] = _.template(
-       '<div class="well well-sm">\
+       '<div class="well well-sm header-well">\
             <div class="text-center">\
-                You are logged in as <%=username%> --- \
-                <button id="see-all-entries-button" class="btn btn btn-xm">Home</button>\
-                <button id="logout-button" class="btn btn-xm">Logout</button>\
+             <p class="center-align">\
+                <button id="see-all-entries-button" class="float-left btn btn-xm">Home</button>\
+               You are logged in as <%=username%>\
+                <button id="logout-button" class="float-right btn btn-xm">Logout</button>\
+                </p>\
             </div>\
         </div>\
         <div id="econ-cit-container"></div>'

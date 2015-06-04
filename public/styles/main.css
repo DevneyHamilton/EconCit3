@@ -1,13 +1,57 @@
-#logout-button:{
-	float: right;
-};
+/*Tigra orange: #E46B2B*/
 
-.float-left:{
+
+/*body{
+	background-color: #F8F8F8  ;
+}*/
+
+.float-left{
 	float:left;
 }
 
+.float-right{
+	float:right;
+}
+
+.center-align{
+  vertical-align: bottom;
+  margin-bottom: 0px;
+  margin: 3px;
+}
+
+.error{
+	color:#E46B2B;
+	text-transform: none;
+	font-size: small;
+	font-style: italic;
+	font-weight: normal;
+
+}
+
+.btn-xm{
+	padding: 4px;
+	font-size: small;
+}
+
+.sub-label{
+	color: gray;
+	font-size: small;
+}
+
+label{
+	font-size: small;
+	text-transform: uppercase;
+}
+
 h4{
-	color: orange;
+	color: #E46B2B;
 	text-transform: uppercase;
 	font-weight: bold;
+}
+
+form{
+	border-color: gray;
+	border-width: 1px;
+	border-radius: 4px 4px 0 0;
+	padding: 15px 15px 15px;
 }

@@ -51,20 +51,110 @@
 		el: '#user-home-container',
 		template: window.JST['register'],
 		initialize: function(){
+			_.bindAll(this, 'render', 'attemptRegister');
+			this.render = _.wrap(this.render, function(render) {	//keeps 'this' this in afterRender
+                render();
+                this.afterRender();
+            });
 			this.render();
+		},
+		afterRender:function(){
+			var that = this;
+			console.log("registerview afterRender");
+			$("#register-form").validate({
+				rules: {
+					username: {
+						required: true
+					,	rangelength :[5,20]
+					}
+				,	password:{
+						required: true
+					,	rangelength :[8,20]
+					}
+				,	confirmPassword:{
+						required:true
+					,	equalTo: "#register-password"
+					}
+				,	registerEmail:{
+						required: true
+					,	email: true
+					}
+				,	county:{
+						required: true
+					,	maxlength: 20
+					}
+				}
+
+			,	messages:{
+					username: {
+						required: "Please enter your username."
+					,	rangelength: "Your username must have between 5 and 20 characters."
+					}
+				,	password:{
+						required:"Please enter a password."
+					,	rangelength: "Your password must have between 8 and 20 characters."
+					}
+				,	confirmPassword:{
+						required: "Please confirm your password."
+					,	equalTo: "Your password confirmation must match your password."
+					}
+				,	registerEmail:{
+						required: "Please enter your email"
+					,	email: "This email is not valid. Please correct it."
+					}
+				,	county:{
+						required: "Please enter your county."
+					,	maxlength: "Your county should be less than 20 characters long."
+					}
+				}
+			 ,	submitHandler: function(form, e){
+			 		e.preventDefault();
+			 		var url = CONFIG.base_url + "register";
+					console.log("register post url: " + url );
+					var data ={
+						"username" : $('#register-username').val(),
+						"password" : $('#register-password').val(),
+						"email" : $('#register-email').val(),
+						"county" : $('#register-county').val()
+					};
+					console.log("registering " + JSON.stringify(data));
+					//not sure why this is causing problems. Possible to ask people to manually go back to home for the demo purpose. 
+					//$("#register-form").ajaxForm({
+					$.ajax({
+							url: url, 
+							type: 'post', 
+							data: data,
+							success: function(data){
+								console.log("success returned from register ajax")
+								if(data.status === true){
+									$(".error-container").html(""); //clear any error message
+									app.home(data.uid);
+								}else{
+									$(".error-container").html(data.msg);
+								}
+							},
+							error :function(){
+								console.log("error returned from register ajax");
+								$(".error-container").html("There was a server error. Please try again later.");
+							}
+					});
+					console.log("ajax called, maybe not returned");
+				}	 	
+			});
 		},
 		render: function(){
 			var html = this.template();
 			$(this.el).html(html);
 		},
 		events :{
-			"click button#login-button" : "goToLogin",
-			"click button#register-submit-button" : "attemptRegister", 
+			"click button#login-button" : "goToLogin"
+		//,	"click button#register-submit-button" : "attemptRegister", 
 		},
 		goToLogin : function(){
 			app.login();
 		}, 
 		attemptRegister : function(e){
+			e.preventDefault();
 			var url = CONFIG.base_url + "register";
 			console.log("register post url: " + url );
 			var data ={
