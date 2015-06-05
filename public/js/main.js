@@ -370,7 +370,7 @@ to mess with collection views.
 	var UserEntriesDisplayView = Backbone.View.extend({
 		el: $('#econ-cit-container')
 	,   initialize: function(){
-			_.bindAll(this, 'render', 'createEntry'); 
+			_.bindAll(this, 'render', 'createEntry','checkEntryCreation'); 
             this.render = _.wrap(this.render, function(render) {	//keeps 'this' this in afterRender
                 render();
                 this.afterRender();
@@ -383,7 +383,44 @@ to mess with collection views.
 			$('#econ-cit-container').html(display_skeleton_html);
 			var create_entry_html = window.JST['create_entry'];
 			$('#create_entry_container').html(create_entry_html);
-			$('#create-entry-button').click(this.createEntry);
+			//$('#create-entry-button').click(this.createEntry);
+			$('#create-entry-button').click(this.checkEntryCreation);
+			
+		}
+	,	checkEntryCreation:function(e){
+			e.preventDefault();
+			var that = this;
+			var checkCreationTemplate = window.JST['create-dialogue-content'];
+			var name = $('#new-entry-name').val();
+			var start_date =  (new Date($('#start-date').val())).toDateString();
+			var end_date = (new Date($('#end-date').val())).toDateString();
+			var checkCreationHtml = checkCreationTemplate({name: name, start_date: start_date, end_date: end_date})
+			$("#create-dialog").html(checkCreationHtml);
+			$("#create-dialog").dialog({
+				modal: true
+			,	buttons: [
+					{
+						text:'Yes, create my new Economic Citizenship Entry!'
+					,	click : function(e){
+							e.preventDefault();
+							console.log("close modal, create entry")
+							$("#create-dialog").dialog("close");
+							that.createEntry();
+						}
+					,	class: "btn preferred-btn"
+					}
+
+				,	{
+						text: 'No, let me edit the name and dates first.'
+					,	click: function(e){
+							e.preventDefault();
+							console.log("close modal, edit entry")
+							$("#create-dialog").dialog("close");
+						}
+					,	class: "btn"
+					}
+				]
+			});
 		}
 	, 	afterRender: function(){
 			var entries = this.model.get("entries");
@@ -394,8 +431,7 @@ to mess with collection views.
 					var entry_display_view = new EntryDisplayView({model: entry_model})
 			});
 		}
-	, 	createEntry: function(e){
-			e.preventDefault();
+	, 	createEntry: function(){
 			console.log("so you wanna make a new entry?");
 			var uid = this.model.get("_id")
 			var url = CONFIG.base_url + "createEntry/" + uid;

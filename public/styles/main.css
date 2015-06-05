@@ -9,6 +9,32 @@
 	float:left;
 }
 
+.ui-dialog{
+	background-color: black;
+	color:#fff;
+	text-align: center;
+	opacity:.9;
+	width: 600px !important;
+}
+
+.btn:{
+	color:#E46B2B !important;
+}
+
+.preferred-btn{
+	font-weight: bold !important;
+}
+
+.ui-dialog-buttonset >.btn{
+	padding: 3px;
+	margin: 6px;
+	color:#E46B2B !important;
+}
+
+.ui-dialog-buttonset{
+	text-align: center;
+}
+
 .float-right{
 	float:right;
 }

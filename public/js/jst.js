@@ -16,6 +16,13 @@ window.JST['login'] = _.template(
     </div>'
 );
 
+window.JST['create-dialogue-content'] = _.template(
+    '<p> You\'re about to create an Economic Citizenship Entry named "<%=name%>"\
+    starting on <%=start_date%> and ending on <%=end_date%>. The name and dates\
+    cannot be edited in the future. Do you want to create this entry or edit the name and dates now? </p>\
+        '
+)
+
 window.JST['register'] = _.template(
 	'<div>\
         <h4>Register for the Economic Citizenship App!</h4>\
@@ -66,6 +73,8 @@ window.JST['user_skeleton'] = _.template(
 
 window.JST['create_entry'] = _.template(
     '<h4>Create a new Economic Citizenship Entry:</h4>\
+    <div id="create-dialog" class="ec-dialog">\
+    </div>\
     <form class="form-inline">\
         <div class="form-group">\
             <label for="new_entry_name">Name</label>\
