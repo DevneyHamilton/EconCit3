@@ -219,19 +219,19 @@
 	were developed by TIGRA staff. 
 	*/
 	var _mapEconCitScoreToCreditScoreScale = function(score){
-        var EconCitRange = [0,6]
+        var EconCitRange = [0,7]
 		var CSRange = [300, 550]
         if(score < 7){
-            EconCitRange = [0,6]
+            EconCitRange = [0,7]
             CSRange = [300, 549]
         }else if(score< 13){
-            EconCitRange = [7,12]
+            EconCitRange = [7,13]
             CSRange = [550, 619]     
         }else if(score < 19){
-            EconCitRange = [13,18]
+            EconCitRange = [13,19]
             CSRange = [620, 679]
         }else if(score < 25){
-            EconCitRange = [19,24]
+            EconCitRange = [19,25]
             CSRange = [680, 739]
         }else{
             EconCitRange = [25,30]
@@ -278,13 +278,15 @@
 		var CreditCategory = new Category({
 			name: "credit",
 			displayName:"Credit Score",	
-			inputs: {"credit_score":"default"},
+			inputs: {"credit_score":0},
 			instructions: "Enter your credit score if you know it, or work with your coach to learn what it is. TIGRA and TIGRA's partners can help you get your credit score.",
 			weight: .1,
 			calculationFunction : function(inputs){
 				var subscore = 0;
 				var credit_score = parseInt(inputs["credit_score"]);
-				if(credit_score < 550){
+				if(credit_score == 0){
+					subscore = 0;
+				}else if(credit_score < 550){
 					subscore = 1;
 				}else if(credit_score < 620){
 					subscore = 2;
@@ -306,7 +308,7 @@
 		var BankCategory = new Category({
 			name: "bank",
 			displayName: "Banking Practice",
-			inputs: {"bank_score": "default"},
+			inputs: {"bank_score": 0},
 			weight: .2,
 			instructions: "Work with your coach to determine your score between 1 and 5 for the banking category.",
 			calculationFunction : function(inputs){
@@ -325,7 +327,7 @@
 				"county": "unknown"
 			},
 			weight: .1,
-			instructions: "Tell us how many hours you have volunteered (you may volunteer at a church, school, organization, or help out neighbors) and any money you donate. Work with your coach to figure out your gross income.",
+			instructions: "Tell us how many hours you have volunteered (you may volunteer at a church, school, organization, or help out neighbors) and any money you donate. Work with your coach to figure out your gross income. If you did not have an income, but donated or volunteered, please enter 1 for 'gross_income.'",
 			calculationFunction:function(inputs){
 				var subscore = 0;
 				var county_average=_getCountyGivingAverage(inputs["county"]); //hardcoded

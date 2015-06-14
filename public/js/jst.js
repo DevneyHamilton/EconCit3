@@ -62,7 +62,7 @@ window.JST['user_skeleton'] = _.template(
        '<div class="well well-sm header-well">\
             <div class="text-center">\
              <p class="center-align">\
-                <button id="see-all-entries-button" class="float-left btn btn-xm">Home</button>\
+                <button id="see-all-entries-button" class="float-left btn btn-xm">View All My Economic Citizenship Entries</button>\
                You are logged in as <%=username%>\
                 <button id="logout-button" class="float-right btn btn-xm">Logout</button>\
                 </p>\

@@ -499,7 +499,7 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 	var EntryEditView = Backbone.View.extend({
 		el: $('#econ-cit-container')
 	,	initialize: function(){
-			_.bindAll(this, 'render', 'calculateTotalScore', 'clearScoreInfo'); 
+			_.bindAll(this, 'render', 'calculateTotalScore', 'clearScoreInfo', 'askIfUserWantsScoreWithDefaults'); 
             this.render = _.wrap(this.render, function(render) {//keeps 'this' this in afterRender
                 render();
                 this.afterRender();
@@ -522,9 +522,43 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 			$("#score-container").html("");
 
 		}
+	,	askIfUserWantsScoreWithDefaults:function(unfilled_cats){
+			// var that = this;
+			// console.log("lets ask if user wants score with defaults");
+			// console.log("uncompleted cats: " + unfilled_cats.toString());
+			// var template = window.JST["ask_score_with_defaults"];
+			// var html = template(unfilled_cats: unfilled_cats.toString())
+			// $("#ask_score_dialog").html(html);
+			// $("#ask_score_dialog").dialog({
+			// 	modal: true
+			// ,	buttons :[
+			// 		{
+			// 			text: "Yes, force my Economic Citizenship score with default values."
+			// 		,	click: function() {
+			// 				console.log("force score");
+			// 			}
+			// 		,	class: "btn"
+			// 		}
+			// 	,	{	
+			// 			text: "No, I want to keep answering questions."
+			// 		,	click : function(){
+			// 				console.log("keep working on econ cit info");
+			// 				$("#ask_score_dialog").dialog("close");
+			// 			}
+			// 		,	class: "btn preferred-btn"
+
+			// 		}
+					
+
+
+			// 	]
+
+			// });
+		}
 	,	calculateTotalScore:function(){
 			console.log("wanna get your total score?")
 			console.log(JSON.stringify(this.model));
+			var that = this;
 			var el = "#score-container";
 			var error_selector = "#score-container .error-container"
 			var status =  false;
@@ -537,7 +571,7 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 					var entry = _.findWhere(entries, {_id: entry_id});
 					console.log(JSON.stringify(entry));
 					if(entry["data"] === undefined){
-						msg = "You have no Economic Citizenship data saved. Please enter all information for all categories and try again.";
+						msg = "You have no Economic Citizenship data saved. Please enter information for all categories and try again.";
 					}else{
 						console.log("fetched updated user information");
 						//check if all categories available
@@ -552,7 +586,10 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 						}else{ 
 							var unfilled_cats = _.difference(expected_cats, found_cats);
 							console.log(unfilled_cats.toString())
-							msg = "Please enter information for the following categories and then try again: " + unfilled_cats.toString();
+							msg = "Please save your information for the following categories and then try again: "
+								 + unfilled_cats.toString()
+								 + ". If you do not have the information, save the default value (usually zero).";
+							//that.askIfUserWantsScoreWithDefaults(unfilled_cats);
 						}
 					}
 					console.log(msg);
