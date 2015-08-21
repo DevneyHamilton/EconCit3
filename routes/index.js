@@ -86,6 +86,7 @@ This method uses passportjs to handle authorization and sessions.
 	router.get('/getEntry/:uid/:entry_id', isAuthenticated, UserRoutes.getEntry);
 //try posting for createntry:
 
+router.get('/users', isAuthenticated, UserRoutes.getUsers);
 
 router.post('/createEntry/:uid', isAuthenticated, UserRoutes.createEntry);
 

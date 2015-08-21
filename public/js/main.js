@@ -195,6 +195,8 @@
 		*/
 	});
 
+
+
 	/*An EconCitCategoryView is created for each 
 	category in the EconCit module. It is called from within
 	the UserView, at the moment. 
@@ -471,6 +473,7 @@ to mess with collection views.
 			$('#logout-button').click(this.logout);
 			$("#see-all-entries-button").click(this.seeAllEntries); //clear
 			var entries_display = new UserEntriesDisplayView({model: this.model}); //pass user as model to entriesDisplayView
+			this.handleAdmin();
 		}
 	,	seeAllEntries : function(uid){
 			console.log("display all entries for user: " + this.model.get("_id"));
@@ -490,6 +493,14 @@ to mess with collection views.
 					app.login();
 				}
 			});
+		}
+	,	handleAdmin : function(e){
+			if(this.model.get("username") == "TigraAdmin"){
+				var html = window.JST['admin_button']
+				$('#home_view_header').append(html);
+			}
+			
+			$('#home_view_header').click(app.showAdmin);
 		}
 	})
 
@@ -624,6 +635,60 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 		}
 	});
 
+	var AdminView = Backbone.View.extend({
+		el: '#econ-cit-container'
+	,	initialize : function(){
+			_.bindAll(this, 'render');
+			var users = new Users();
+			var that = this;
+			users.fetch({
+				success : function(collection, response, options){
+					console.log("success on users fetch in AdminView");
+					//console.log(collection);
+					that.users = collection;
+					that.render();
+				}
+			,	error : function(collection, response, options){
+					console.log("error on users fetch in AdminView");
+				}
+			});
+ 
+
+		}
+	,	render : function(){
+			var getEmailAndScores = function(user, index, list){
+				var email = user.get("email");
+				var entries = user.get("entries");
+				console.log("user " + index + ": " + email);
+				var scores = _.map(entries, function(entry, i, l){
+					var score = EconCit.scoreEntry(entry["data"]);
+					var start_date = entry["start_date"];
+					var end_date = entry["end_date"];
+					var score_info = {"start_date" : start_date, "end_date":end_date, "score": score};
+					console.log(score_info);
+					return score_info;
+
+				})
+				console.log("scores in getEmailAndScores: " + scores);
+				return {"email" : email, "score_info": scores};
+
+			}
+			var userScores = _.map(this.users.models, getEmailAndScores)
+			console.log("score info: " + JSON.stringify(userScores));
+			$(this.el).html= JSON.stringify(userScores);
+		}
+
+	});
+
+	/*Users collection is only for Admin View at the moment*/
+	var Users = Backbone.Collection.extend({
+		model: User
+	,	url: function(){
+			var base_url = CONFIG.base_url;
+			return base_url + "users";
+
+		}
+	});
 
 
 	var AppRouter = Backbone.Router.extend({
@@ -631,7 +696,12 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 			"": "login",
 			"signup" : "register",
 			"home/:id" : "home",
-			"editEntry/:uid/:entry_id" : "editEntry"
+			"editEntry/:uid/:entry_id" : "editEntry",
+			"admin" : "showAdmin"
+		},
+		showAdmin: function(){
+			alert('You are in admin mode.');
+			this.admin_view = new AdminView();
 		},
 		login: function(){
 			this.login_view = new LoginView();
@@ -645,7 +715,6 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 			user.fetch({
 				success: function(user, res){
 					//can we attach user view to the app object somehow?
-					//var user_view = new UserView({model: user});
 					var user_view = new UserHomeView({model: user});
 				},
 				error: function(user, res){
@@ -656,7 +725,7 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 		editEntry: function(uid, entry_id){
 			console.log("in editEntry");
 			var user = new User({_id: uid});
-			//hack:fetches user because I was blocked by wierd CORS issues with a raw ajax to getEntry on the localhost
+			//hack:fetches user because I was blocked by CORS issues with a raw ajax to getEntry on the localhost
 			user.fetch({
 				success: function(user, res){
 					var entries = user.get('entries');

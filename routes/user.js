@@ -14,6 +14,20 @@ module.exports.updateEntry = function(req, res){
 
 };
 
+exports.getUsers = function(req, res){
+	console.log("in getUsers");
+	UserModel.find(function(err, users){
+		if(err){
+			console.log("ERR:" + err);
+			return res.send({status: false, msg : "Problem retrieving users."})
+		}else{
+			console.log("no err on getUsers");
+			console.log("num:" + users.length);
+			console.log(users);
+			return res.send(users);
+		}
+	});
+}
 
 exports.getUser = function(req, res){
 		var uid = req.params.uid;

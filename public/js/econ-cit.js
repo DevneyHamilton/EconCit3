@@ -336,10 +336,10 @@
 				var income = parseInt(inputs["gross_income"]) + 0.0;
 				if(income > 0){
 					var raw_score = (donations + 22.5 * hours)/income
-					console.log("community raw score:" + raw_score)
-					console.log("county avg: " + county_average)
+					//console.log("community raw score:" + raw_score)
+					///console.log("county avg: " + county_average)
 					var adjusted_score = raw_score/county_average;
-					console.log("community adjusted_score score:" + adjusted_score)
+					//console.log("community adjusted_score score:" + adjusted_score)
 					if(adjusted_score == 0){
 						subscore = 1;
 					}else if(adjusted_score < .9){
@@ -477,6 +477,9 @@
 	exports.scoreEntry = function(entry_data){
 		console.log(JSON.stringify(entry_data));
 		var categories = _categories;
+		if(entry_data === undefined){
+			return undefined;
+		}
 		var cats_in_entry = Object.keys(entry_data); //if a user hasn't entered data for an category, that cat will not be present
 		var raw_score = 0;
 		var score_info = {}; //maps cat_name to subscore
@@ -485,9 +488,9 @@
 			var cat = categories[cat_name]; //gets the full category object so that we can look up any information about it
 			var subscoreFun = cat["calculationFunction"];
 			var subscore = subscoreFun(entry_data[cat_name]) //sends user's data for that category to the category's scoring function
-			console.log(cat_name + " subscore: " + subscore);
+			//console.log(cat_name + " subscore: " + subscore);
 			var scaled_subscore = _scaleSubscore(subscore, cat["weight"]);
-			console.log("scaled subscore: " + scaled_subscore)
+			//console.log("scaled subscore: " + scaled_subscore)
 			raw_score += scaled_subscore;
 			score_info[cat_name] = scaled_subscore;
 		});
