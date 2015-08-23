@@ -500,7 +500,7 @@ to mess with collection views.
 				$('#home_view_header').append(html);
 			}
 			
-			$('#home_view_header').click(app.showAdmin);
+			$('#admin_button').click(app.showAdmin);
 		}
 	})
 
@@ -662,9 +662,6 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 
 		}
 	,	afterRender: function(){
-
-			alert("after render using that!");
-			alert(JSON.stringify(this.userScores[0]));
 			$("#econ-cit-container").html(''); //lazy 'clear'
 			_.each(this.userScores, function(userScoreItem, i, l){
 				var email = userScoreItem['email'];
@@ -733,7 +730,6 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 			"admin" : "showAdmin"
 		},
 		showAdmin: function(){
-			alert('You are in admin mode.');
 			this.admin_view = new AdminView();
 		},
 		login: function(){
