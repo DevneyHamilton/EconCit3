@@ -498,9 +498,10 @@ to mess with collection views.
 			if(this.model.get("username") == "TigraAdmin"){
 				var html = window.JST['admin_button']
 				$('#home_view_header').append(html);
+				$('#admin_button').click(app.showAdmin);
 			}
 			
-			$('#admin_button').click(app.showAdmin);
+			
 		}
 	})
 
