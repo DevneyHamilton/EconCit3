@@ -635,6 +635,8 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 		}
 	});
 
+	/*The admin view should only be available to a TIGRA-specified user, accessible via a button only rendered when that user is logged in. For 
+	now it displays all score info based on data in the database. Apologies for hastily written code. */
 	var AdminView = Backbone.View.extend({
 		el: '#econ-cit-container'
 	,	initialize : function(){
@@ -646,6 +648,10 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 					console.log("success on users fetch in AdminView");
 					//console.log(collection);
 					that.users = collection;
+					that.render = _.wrap(that.render, function(render) {	//keeps 'this' this in afterRender
+                		render();
+                		that.afterRender();
+           			 });
 					that.render();
 				}
 			,	error : function(collection, response, options){
@@ -654,6 +660,32 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 			});
  
 
+		}
+	,	afterRender: function(){
+
+			alert("after render using that!");
+			alert(JSON.stringify(this.userScores[0]));
+			$("#econ-cit-container").html(''); //lazy 'clear'
+			_.each(this.userScores, function(userScoreItem, i, l){
+				var email = userScoreItem['email'];
+				var scoreDetailsTemplate = _.template('<p><%=entry_name%>: <%=score%> (From <%=start_date%> to <%=end_date%>)</p>')
+				var allScoreDetailsHtml = ""; //hacky way to to do this - we're going to add scoreDetailsTemplate strings to this str.
+				var userScores = userScoreItem['score_info'];
+
+				_.each(userScores, function(scoreItem, index, list){
+					var entry_name = scoreItem['entry_name'];
+					var score = scoreItem['score'];
+					var start_date = (new Date(scoreItem["start_date"])).toDateString();
+					var end_date = (new Date(scoreItem["end_date"])).toDateString();
+					var scoreDetails = scoreDetailsTemplate({score: score, start_date: start_date, end_date: end_date, entry_name: entry_name});
+					allScoreDetailsHtml = allScoreDetailsHtml + scoreDetails;
+				});
+				var scoreInfotemplate = _.template('<h4> <%=email%> </h4> <%=scoreDetails%>');
+				var html = scoreInfotemplate({email: email, scoreDetails: allScoreDetailsHtml});
+				$("#econ-cit-container").append(html);
+			});
+				
+				
 		}
 	,	render : function(){
 			var getEmailAndScores = function(user, index, list){
@@ -664,7 +696,8 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 					var score = EconCit.scoreEntry(entry["data"]);
 					var start_date = entry["start_date"];
 					var end_date = entry["end_date"];
-					var score_info = {"start_date" : start_date, "end_date":end_date, "score": score};
+					var entry_name = entry['name'];
+					var score_info = {"start_date" : start_date, "end_date":end_date, "score": score, 'entry_name':entry_name};
 					console.log(score_info);
 					return score_info;
 
@@ -673,9 +706,9 @@ the user's entry list, AUGMENTED with a 'uid' field that is the user's id
 				return {"email" : email, "score_info": scores};
 
 			}
-			var userScores = _.map(this.users.models, getEmailAndScores)
-			console.log("score info: " + JSON.stringify(userScores));
-			$(this.el).html= JSON.stringify(userScores);
+			this.userScores = _.map(this.users.models, getEmailAndScores)
+			console.log("score info: " + JSON.stringify(this.userScores));
+			$(this.el).html= JSON.stringify(this.userScores);
 		}
 
 	});
